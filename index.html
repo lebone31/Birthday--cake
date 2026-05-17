@@ -1,1 +1,138 @@
+If those are included, the page can break and show white.
 
+## Fix it
+
+Go here:
+
+[Edit Your index.html File](https://github.com/lebone31/Birthday--cake/edit/main/index.html?utm_source=chatgpt.com)
+
+Then:
+
+1. Delete EVERYTHING inside the file
+2. Paste ONLY this:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Cake</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:pink;
+    font-family:Arial;
+}
+
+.container{
+    text-align:center;
+}
+
+h1{
+    color:white;
+}
+
+.cake{
+    position:relative;
+    margin:auto;
+    width:200px;
+}
+
+.layer{
+    height:60px;
+    background:#ff69b4;
+    border-radius:10px;
+    margin-top:5px;
+}
+
+.candles{
+    display:flex;
+    justify-content:space-around;
+    margin-bottom:5px;
+}
+
+.candle{
+    width:10px;
+    height:40px;
+    background:white;
+    position:relative;
+}
+
+.flame{
+    width:10px;
+    height:20px;
+    background:orange;
+    border-radius:50%;
+    position:absolute;
+    top:-15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Happy Birthday 🎉</h1>
+
+    <div class="cake">
+
+        <div class="candles">
+            <div class="candle">
+                <div class="flame"></div>
+            </div>
+
+            <div class="candle">
+                <div class="flame"></div>
+            </div>
+
+            <div class="candle">
+                <div class="flame"></div>
+            </div>
+        </div>
+
+        <div class="layer"></div>
+        <div class="layer"></div>
+
+    </div>
+
+</div>
+
+<script>
+navigator.mediaDevices.getUserMedia({audio:true})
+.then(stream => {
+
+    const audioContext = new AudioContext();
+    const mic = audioContext.createMediaStreamSource(stream);
+    const analyser = audioContext.createAnalyser();
+
+    mic.connect(analyser);
+
+    const data = new Uint8Array(analyser.frequencyBinCount);
+
+    function detect(){
+
+        analyser.getByteFrequencyData(data);
+
+        let volume = data.reduce((a,b)=>a+b)/data.length;
+
+        if(volume > 40){
+            document.querySelectorAll(".flame").forEach(f=>{
+                f.style.display = "none";
+            });
+        }
+
+        requestAnimationFrame(detect);
+    }
+
+    detect();
+});
+</script>
+
+</body>
+</html>

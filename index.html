@@ -2,19 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Birthday Premium</title>
+<title>Birthday Experience</title>
 
 <style>
 body {
   margin: 0;
-  font-family: "Arial", sans-serif;
-  background: radial-gradient(circle at top, #1a1a2e, #000);
+  height: 100vh;
+  background: radial-gradient(circle at top, #0b0f2a, #000);
   overflow: hidden;
+  font-family: Arial;
   color: white;
 }
 
-/* CENTER STAGE */
-.wrapper {
+/* CENTER */
+.container {
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -25,29 +26,26 @@ body {
 
 /* TITLE */
 h1 {
-  font-size: 30px;
-  letter-spacing: 1px;
+  font-size: 28px;
+  margin-bottom: 10px;
 }
 
-/* TYPE TEXT */
+/* TEXT */
 #typed {
-  margin-top: 10px;
-  font-size: 16px;
   opacity: 0.7;
+  font-size: 15px;
   height: 25px;
+  margin-bottom: 40px;
 }
 
-/* PREMIUM CAKE */
+/* CAKE (FINAL PREMIUM LOOK) */
 .cake {
   width: 340px;
   height: 210px;
-  margin-top: 50px;
-  background: linear-gradient(145deg, #3aa0ff, #0057d9);
+  background: linear-gradient(145deg, #2f80ff, #0044aa);
   border-radius: 25px;
   position: relative;
-  box-shadow:
-    0 0 25px rgba(0,150,255,0.5),
-    0 40px 80px rgba(0,0,0,0.7);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.6);
 }
 
 /* frosting */
@@ -58,22 +56,20 @@ h1 {
   left: 15px;
   right: 15px;
   height: 65px;
-  background: #bfe3ff;
+  background: #cfe8ff;
   border-radius: 50%;
-  box-shadow: 0 0 20px rgba(100,180,255,0.5);
 }
 
 /* candles */
 .candle {
   width: 12px;
-  height: 75px;
-  background: #fff;
+  height: 70px;
+  background: white;
   position: absolute;
-  top: -85px;
+  top: -80px;
   border-radius: 6px;
 }
 
-/* spacing */
 .c1 { left: 85px; }
 .c2 { left: 160px; }
 .c3 { left: 235px; }
@@ -87,11 +83,10 @@ h1 {
   position: absolute;
   top: -18px;
   left: -1px;
-  box-shadow: 0 0 25px orange;
-  transition: 0.4s ease;
+  box-shadow: 0 0 20px orange;
 }
 
-/* CONFETTI */
+/* confetti */
 .confetti {
   position: absolute;
   width: 8px;
@@ -107,26 +102,26 @@ h1 {
   }
 }
 
-/* FLOATING PARTICLES (premium feel) */
+/* particles */
 .particle {
   position: absolute;
   width: 4px;
   height: 4px;
-  background: rgba(120,200,255,0.8);
+  background: rgba(150,200,255,0.8);
   border-radius: 50%;
   animation: float 10s infinite linear;
 }
 
 @keyframes float {
   from { transform: translateY(0); }
-  to { transform: translateY(-1100px); }
+  to { transform: translateY(-1000px); }
 }
 </style>
 </head>
 
 <body>
 
-<div class="wrapper">
+<div class="container">
 
   <h1>🎉 Happy Birthday to Charlie’s Brother 🎉</h1>
   <div id="typed"></div>
@@ -143,26 +138,24 @@ h1 {
 
 let flames = document.querySelectorAll(".flame");
 
-/* ================= CONFETTI ================= */
-function confettiBurst() {
-  for (let i = 0; i < 90; i++) {
+/* CONFETTI */
+function confetti() {
+  for (let i = 0; i < 80; i++) {
     let c = document.createElement("div");
     c.className = "confetti";
     c.style.left = Math.random() * window.innerWidth + "px";
-    c.style.background = ["#4da6ff","#ffffff","#66ccff","#99ddff"][i % 4];
-    c.style.animationDuration = (2 + Math.random() * 2) + "s";
-
+    c.style.background = ["#4da6ff","#ffffff","#99ccff"][i % 3];
     document.body.appendChild(c);
     setTimeout(() => c.remove(), 4000);
   }
 }
 
-/* ================= MIC ================= */
+/* MIC */
 navigator.mediaDevices.getUserMedia({ audio: true })
 .then(stream => {
-  const audioContext = new AudioContext();
-  const mic = audioContext.createMediaStreamSource(stream);
-  const analyser = audioContext.createAnalyser();
+  const audioCtx = new AudioContext();
+  const mic = audioCtx.createMediaStreamSource(stream);
+  const analyser = audioCtx.createAnalyser();
 
   mic.connect(analyser);
 
@@ -174,37 +167,34 @@ navigator.mediaDevices.getUserMedia({ audio: true })
 
     if (volume > 25) {
       flames.forEach(f => f.style.opacity = "0");
-      confettiBurst();
+      confetti();
     }
 
     requestAnimationFrame(detect);
   }
 
   detect();
-})
-.catch(() => {
-  console.log("Mic blocked");
 });
 
-/* ================= TYPE EFFECT ================= */
-let text = "A special day deserves a special moment ✨";
+/* TEXT ANIMATION */
+let text = "Make a wish ✨";
 let i = 0;
 
 function type() {
   if (i < text.length) {
-    document.getElementById("typed").innerHTML += text.charAt(i);
+    document.getElementById("typed").innerHTML += text[i];
     i++;
-    setTimeout(type, 55);
+    setTimeout(type, 60);
   }
 }
 type();
 
-/* ================= PARTICLES ================= */
-for (let i = 0; i < 35; i++) {
+/* PARTICLES */
+for (let i = 0; i < 30; i++) {
   let p = document.createElement("div");
   p.className = "particle";
   p.style.left = Math.random() * 100 + "%";
-  p.style.animationDuration = (6 + Math.random() * 6) + "s";
+  p.style.animationDuration = (6 + Math.random() * 5) + "s";
   document.body.appendChild(p);
 }
 

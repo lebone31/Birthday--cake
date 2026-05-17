@@ -2,53 +2,59 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Birthday Experience</title>
+<title>Birthday Premium</title>
 
 <style>
 body {
   margin: 0;
   height: 100vh;
-  background: radial-gradient(circle at top, #0b0f2a, #000);
+  background: radial-gradient(circle at top, #0a0a0a, #000);
   overflow: hidden;
   font-family: Arial;
   color: white;
 }
 
-/* CENTER */
+/* CENTER LAYER */
 .container {
+  position: relative;
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
+  z-index: 10; /* IMPORTANT: keeps text above everything */
 }
 
-/* TITLE */
+/* TEXT (FIXED FRONT LAYER ISSUE) */
 h1 {
   font-size: 28px;
-  margin-bottom: 10px;
+  margin: 0;
+  z-index: 20;
+  position: relative;
 }
 
-/* TEXT */
 #typed {
-  opacity: 0.7;
-  font-size: 15px;
+  margin-top: 10px;
+  opacity: 0.8;
   height: 25px;
-  margin-bottom: 40px;
+  z-index: 20;
+  position: relative;
 }
 
-/* CAKE (FINAL PREMIUM LOOK) */
+/* CAKE */
 .cake {
   width: 340px;
   height: 210px;
-  background: linear-gradient(145deg, #2f80ff, #0044aa);
+  margin-top: 40px;
+  background: linear-gradient(145deg, #000, #222);
   border-radius: 25px;
   position: relative;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+  box-shadow: 0 30px 70px rgba(255,255,255,0.08);
+  z-index: 5;
 }
 
-/* frosting */
+/* frosting (white contrast) */
 .cake::before {
   content: "";
   position: absolute;
@@ -56,15 +62,16 @@ h1 {
   left: 15px;
   right: 15px;
   height: 65px;
-  background: #cfe8ff;
+  background: #fff;
   border-radius: 50%;
+  box-shadow: 0 0 25px rgba(255,255,255,0.2);
 }
 
 /* candles */
 .candle {
   width: 12px;
   height: 70px;
-  background: white;
+  background: #fff;
   position: absolute;
   top: -80px;
   border-radius: 6px;
@@ -86,33 +93,34 @@ h1 {
   box-shadow: 0 0 20px orange;
 }
 
-/* confetti */
-.confetti {
+/* BALLOONS */
+.balloon {
   position: absolute;
-  width: 8px;
-  height: 8px;
-  top: 0;
-  animation: fall 3s linear forwards;
-}
-
-@keyframes fall {
-  to {
-    transform: translateY(100vh) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-/* particles */
-.particle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: rgba(150,200,255,0.8);
+  width: 25px;
+  height: 35px;
   border-radius: 50%;
-  animation: float 10s infinite linear;
+  bottom: -100px;
+  animation: float 10s linear infinite;
+  z-index: 1;
 }
 
 @keyframes float {
+  from { transform: translateY(0); }
+  to { transform: translateY(-1200px); }
+}
+
+/* FLOATING PARTICLES (SUBTLE PREMIUM FEEL) */
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 50%;
+  animation: drift 12s linear infinite;
+  z-index: 1;
+}
+
+@keyframes drift {
   from { transform: translateY(0); }
   to { transform: translateY(-1000px); }
 }
@@ -138,19 +146,7 @@ h1 {
 
 let flames = document.querySelectorAll(".flame");
 
-/* CONFETTI */
-function confetti() {
-  for (let i = 0; i < 80; i++) {
-    let c = document.createElement("div");
-    c.className = "confetti";
-    c.style.left = Math.random() * window.innerWidth + "px";
-    c.style.background = ["#4da6ff","#ffffff","#99ccff"][i % 3];
-    document.body.appendChild(c);
-    setTimeout(() => c.remove(), 4000);
-  }
-}
-
-/* MIC */
+/* MIC BLAST */
 navigator.mediaDevices.getUserMedia({ audio: true })
 .then(stream => {
   const audioCtx = new AudioContext();
@@ -158,7 +154,6 @@ navigator.mediaDevices.getUserMedia({ audio: true })
   const analyser = audioCtx.createAnalyser();
 
   mic.connect(analyser);
-
   const data = new Uint8Array(analyser.frequencyBinCount);
 
   function detect() {
@@ -167,7 +162,6 @@ navigator.mediaDevices.getUserMedia({ audio: true })
 
     if (volume > 25) {
       flames.forEach(f => f.style.opacity = "0");
-      confetti();
     }
 
     requestAnimationFrame(detect);
@@ -176,7 +170,7 @@ navigator.mediaDevices.getUserMedia({ audio: true })
   detect();
 });
 
-/* TEXT ANIMATION */
+/* TYPE TEXT */
 let text = "Make a wish ✨";
 let i = 0;
 
@@ -189,12 +183,22 @@ function type() {
 }
 type();
 
-/* PARTICLES */
+/* BALLOONS */
+for (let i = 0; i < 18; i++) {
+  let b = document.createElement("div");
+  b.className = "balloon";
+  b.style.left = Math.random() * 100 + "%";
+  b.style.background = ["#fff","#ccc","#999","#000"][i % 4];
+  b.style.animationDuration = (6 + Math.random() * 6) + "s";
+  document.body.appendChild(b);
+}
+
+/* FLOATING PARTICLES */
 for (let i = 0; i < 30; i++) {
   let p = document.createElement("div");
   p.className = "particle";
   p.style.left = Math.random() * 100 + "%";
-  p.style.animationDuration = (6 + Math.random() * 5) + "s";
+  p.style.animationDuration = (8 + Math.random() * 5) + "s";
   document.body.appendChild(p);
 }
 

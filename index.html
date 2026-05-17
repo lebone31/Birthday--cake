@@ -2,209 +2,139 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Birthday Scene</title>
+<title>Make a Wish 🎂</title>
 
 <style>
 body {
   margin: 0;
   height: 100vh;
+  background: linear-gradient(to top, #0f0f1a, #1a1a2e);
   overflow: hidden;
-  background: radial-gradient(circle at top, #0b1020, #000);
   font-family: Arial;
   color: white;
-}
-
-/* FADE IN LIKE TIKTOK INTRO */
-body {
-  animation: fadeIn 2s ease-in;
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* BACKGROUND FLOATERS */
-.balloon {
-  position: absolute;
-  width: 20px;
-  height: 28px;
-  border-radius: 50%;
-  bottom: -100px;
-  animation: floatUp linear infinite;
-  opacity: 0.5;
-}
-
-@keyframes floatUp {
-  from { transform: translateY(0); }
-  to { transform: translateY(-120vh); }
-}
-
-/* PARTICLES (DEPTH) */
-.particle {
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  background: rgba(255,255,255,0.4);
-  border-radius: 50%;
-  animation: drift 10s linear infinite;
-}
-
-@keyframes drift {
-  from { transform: translateY(0); }
-  to { transform: translateY(-1000px); }
-}
-
-/* CENTER SCENE */
-.scene {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   text-align: center;
 }
 
 /* TITLE */
 h1 {
-  font-size: 26px;
-  margin: 0;
-  opacity: 0.95;
+  margin-top: 30px;
+  font-size: 28px;
+  font-weight: 600;
 }
 
-#typed {
-  margin-top: 8px;
-  font-size: 14px;
-  opacity: 0.6;
-  height: 20px;
+/* CENTER WRAPPER */
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* CAKE */
 .cake {
-  margin-top: 40px;
-  width: 320px;
-  height: 200px;
-  background: linear-gradient(145deg, #111, #000);
-  border-radius: 25px;
+  width: 220px;
+  height: 140px;
+  background: #ffffff;
+  border-radius: 20px;
   position: relative;
-  box-shadow: 0 35px 90px rgba(0,0,0,0.8);
+  margin: auto;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 /* frosting */
 .cake::before {
   content: "";
   position: absolute;
-  top: -25px;
-  left: 15px;
-  right: 15px;
-  height: 60px;
-  background: white;
+  top: -20px;
+  left: 10px;
+  right: 10px;
+  height: 40px;
+  background: #ffe6f0;
   border-radius: 50%;
-  box-shadow: 0 0 25px rgba(255,255,255,0.15);
 }
 
 /* candles */
 .candle {
-  width: 10px;
-  height: 70px;
-  background: white;
+  width: 8px;
+  height: 45px;
+  background: #ff6b6b;
   position: absolute;
-  top: -75px;
+  top: -50px;
+  border-radius: 4px;
 }
 
-.c1 { left: 80px; }
-.c2 { left: 150px; }
-.c3 { left: 220px; }
+.c1 { left: 60px; }
+.c2 { left: 105px; }
+.c3 { left: 150px; }
 
 /* flame */
 .flame {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   background: orange;
   border-radius: 50%;
   position: absolute;
-  top: -15px;
+  top: -12px;
   left: -1px;
-  box-shadow: 0 0 20px orange;
-  transition: 0.5s ease;
+  box-shadow: 0 0 15px orange;
+}
+
+/* balloons */
+.balloon {
+  position: absolute;
+  width: 20px;
+  height: 28px;
+  border-radius: 50%;
+  bottom: -100px;
+  animation: float 8s linear infinite;
+}
+
+@keyframes float {
+  to {
+    transform: translateY(-110vh);
+  }
+}
+
+/* hint text */
+p {
+  margin-top: 10px;
+  opacity: 0.7;
 }
 </style>
 </head>
 
 <body>
 
-<div class="scene">
+<h1>🎉 Make a Wish 🎉</h1>
+<p>Click the cake to blow the candles 💨</p>
 
-  <h1>🎉 Happy Birthday to Charlie’s Brother 🎉</h1>
-  <div id="typed"></div>
+<div class="center">
+  <div class="cake" onclick="blowCandles()">
 
-  <div class="cake">
     <div class="candle c1"><div class="flame"></div></div>
     <div class="candle c2"><div class="flame"></div></div>
     <div class="candle c3"><div class="flame"></div></div>
-  </div>
 
+  </div>
 </div>
 
 <script>
 
-let flames = document.querySelectorAll(".flame");
-
-/* MIC BLOW (TIKTOK MOMENT) */
-navigator.mediaDevices.getUserMedia({ audio: true })
-.then(stream => {
-  const audioCtx = new AudioContext();
-  const mic = audioCtx.createMediaStreamSource(stream);
-  const analyser = audioCtx.createAnalyser();
-
-  mic.connect(analyser);
-  const data = new Uint8Array(analyser.frequencyBinCount);
-
-  function detect() {
-    analyser.getByteFrequencyData(data);
-    let volume = data.reduce((a,b)=>a+b) / data.length;
-
-    if (volume > 25) {
-      flames.forEach(f => {
-        f.style.opacity = "0";
-        f.style.transform = "scale(0)";
-      });
-    }
-
-    requestAnimationFrame(detect);
-  }
-
-  detect();
-});
-
-/* TYPE INTRO TEXT */
-let text = "Make a wish...";
-let i = 0;
-
-function type() {
-  if (i < text.length) {
-    document.getElementById("typed").innerHTML += text[i];
-    i++;
-    setTimeout(type, 70);
-  }
-}
-type();
-
-/* BALLOONS (SOFT CINEMATIC DRIFT) */
-for (let i = 0; i < 18; i++) {
+/* BALLOONS */
+for (let i = 0; i < 15; i++) {
   let b = document.createElement("div");
   b.className = "balloon";
   b.style.left = Math.random() * 100 + "%";
-  b.style.background = ["#fff","#ccc","#aaa"][i % 3];
-  b.style.animationDuration = (6 + Math.random() * 8) + "s";
+  b.style.background = ["#ff6b6b","#ffd93d","#6bcB77","#4d96ff","#c77dff"][i % 5];
+  b.style.animationDuration = (5 + Math.random() * 5) + "s";
   document.body.appendChild(b);
 }
 
-/* PARTICLES */
-for (let i = 0; i < 30; i++) {
-  let p = document.createElement("div");
-  p.className = "particle";
-  p.style.left = Math.random() * 100 + "%";
-  p.style.animationDuration = (5 + Math.random() * 6) + "s";
-  document.body.appendChild(p);
+/* BLOW CANDLES */
+function blowCandles() {
+  document.querySelectorAll(".flame").forEach(f => {
+    f.style.opacity = "0";
+  });
 }
 
 </script>
